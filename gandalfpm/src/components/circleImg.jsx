@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MyComponent = () => {
+const circleImg = () => {
     return (
         <div>
             <h1>Welcome to Gandalf Password Manager</h1>
@@ -8,4 +8,4 @@ const MyComponent = () => {
     );
 };
 
-export default MyComponent;
+export default circleImg;
