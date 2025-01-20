@@ -6,7 +6,7 @@ function MarketingFrontPage() {
     <div className="marketing-page">
       {/* Hero Section */}
       <header className="hero">
-        <h1>Welcome to SecurePass</h1>
+        <h1>Welcome to Gandalf Password Manager</h1>
         <p>Your ultimate password management solution.</p>
         <button className="cta-button">Get Started</button>
       </header>
