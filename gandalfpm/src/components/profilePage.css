@@ -14,8 +14,12 @@ body{
 }
 
 .backgroundImg{
+  display: flex;
+
   background-image: url(backgroundocean.webp);
   background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
 }
 
 .profileContainer {
