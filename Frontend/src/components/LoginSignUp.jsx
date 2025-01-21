@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-
+import logo from "../images/gandalflogo.jpg"; //import logo image
 
 const LoginSignUp = () => {
   const [isLogin, setIsLogin] = useState(true);
+  // State to toggle between Login and Sign Up modes
+
   const [formData, setFormData] = useState({
+    // State to manage form data for name, email, and password
     name: "",
     email: "",
     password: "",
   });
 
+  // Handle form input changes and update formData state
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value } = event.target; // Extract name and value from input
+    setFormData({ ...formData, [name]: value }); // Update the corresponding field in state
   };
 
+  // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     alert(`${isLogin ? "Logging in" : "Registering"} with ${formData.email}`);
@@ -30,10 +35,11 @@ const LoginSignUp = () => {
         `}
       </style>
       <div style={styles.card}>
+        <img src={logo} alt="Gandalf Logo" style={styles.logo} />
         <h1 style={styles.title}>Gandalf Password Manager</h1>
         <h2 style={styles.subtitle}>{isLogin ? "Login" : "Sign Up"}</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
-          {!isLogin && (
+          {!isLogin && ( //Form for login signup
             <input
               type="text"
               name="name"
@@ -43,7 +49,7 @@ const LoginSignUp = () => {
               style={styles.input}
             />
           )}
-          <input
+          <input //email input 
             type="email"
             name="email"
             placeholder="Email"
@@ -51,7 +57,7 @@ const LoginSignUp = () => {
             onChange={handleChange}
             style={styles.input}
           />
-          <input
+          <input //password input
             type="password"
             name="password"
             placeholder="Password"
@@ -59,8 +65,9 @@ const LoginSignUp = () => {
             onChange={handleChange}
             style={styles.input}
           />
-          <button type="submit" style={styles.button}>
-            {isLogin ? "Login" : "Sign Up"}
+          <button // submit button
+            type="submit" style={styles.button}> 
+            {isLogin ? "Login" : "Sign Up"} 
           </button>
         </form>
         <p style={styles.toggle} onClick={() => setIsLogin(!isLogin)}>
@@ -70,14 +77,20 @@ const LoginSignUp = () => {
     </div>
   );
 };
-
+//styles for the components
 const styles = {
   container: {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     height: "800px",
     backgroundColor:"#e0f7fa",
+  },
+  logo: {
+    width: "100px", 
+    height: "100px",
+    marginBottom: "20px", 
   },
   card: {
     background: "#add8e6",
@@ -124,3 +137,4 @@ const styles = {
 };
 
 export default LoginSignUp;
+
