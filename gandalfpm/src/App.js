@@ -1,9 +1,13 @@
 import './App.css';
-import ProfilePage from './profilePage/profilePage.js';
+import ProfilePage from './components/profilePage.js';
+// import MarketingFrontPage from './marketingfrontpage.js';
 
 function App() {
   return (
+    <div>
       <ProfilePage />
+      {/* <MarketingFrontPage /> */}
+    </div>
   );
 }
 
