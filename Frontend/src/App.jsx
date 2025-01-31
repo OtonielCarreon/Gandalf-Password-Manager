@@ -1,10 +1,10 @@
 import React from "react";
-import LoginSignUp from "./components/LoginSignUp";
+import PasswordManager from "./components/PasswordManager"; 
 
 const App = () => {
   return (
     <div>
-      <LoginSignUp />
+      <PasswordManager />
     </div>
   );
 };
