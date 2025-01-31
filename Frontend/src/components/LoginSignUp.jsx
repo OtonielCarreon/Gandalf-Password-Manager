@@ -84,7 +84,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    height: "800px",
+    height: "100vh",
     backgroundColor:"#e0f7fa",
   },
   logo: {

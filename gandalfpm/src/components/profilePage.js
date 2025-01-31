@@ -3,25 +3,40 @@ import styles from './profilePage.css';
 import CircleImg from './circleImg.js';
 import './backgroundocean.webp';
 import './gandalflogo.jpg';
+import User from './user.jsx';
+
+function toggleEdit() {
+  const nameField = document.getElementById('profile-name');
+  if (nameField.disabled) {
+      nameField.disabled = false;
+      nameField.focus();
+  } else {
+      nameField.disabled = true;
+  }
+}
 
 function ProfilePage() {
   return (
     <div className="profileContainer">
       <div className="profileCard">
-      <h1 className="profileName">Otoniel Carreon</h1>
-        <CircleImg />
-        <p className="profileBio">
-          A passionate software developer with experience in React and Node.js.
-        </p>
-        <input type="text" className="contactInfo">
-          {/* <p>Email: ocarreon21@apu.edu</p>
-          <p>Phone: +1 234 567 890</p>
-          <p>Location: California, USA</p> */}
-        </input>
+        <div className="profileInfo">
+          <CircleImg />
+          <label for="name">First name</label>
+          <input type="text" id="name" name="fname" value='Otoniel Carreon'/>
+          <button class="edit-button">Edit Profile</button>
+        </div>
+
+        <div>
+          <div className="contactInfo">
+          <div class="email-content">
+            <h2>Email Address</h2>
+            <p>ocarreon24@gmail.com</p>
+          </div>
+        </div>
+        <p>Password</p>
       </div>
-      <img class="backgroundImg" />
-      {/* <img class= */}
     </div>
+  </div>
   );
 };
 
