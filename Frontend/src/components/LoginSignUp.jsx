@@ -137,4 +137,3 @@ const styles = {
 };
 
 export default LoginSignUp;
-
