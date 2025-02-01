@@ -1,0 +1,7 @@
+.circlepfp{
+    border-radius: 50%;
+    max-width: 125px;
+    max-height: 125px;
+    border: 1px solid white;
+    margin-top: 25px;
+}
