@@ -10,6 +10,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<LoginSignUp />} />  {/* Default page */}
         <Route path="/passwords" element={<PasswordManager />} />  {/* Separate login page */}
+        <Route path="/profile" element={<ProfilePage />} /> {/* Profile Page */}
       </Routes>
     </Router>
   );
