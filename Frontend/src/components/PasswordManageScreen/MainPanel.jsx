@@ -13,6 +13,11 @@ export default function MainPanel({ selected, isEditing, showPassword, onFieldCh
     );
   }
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!"); 
+  };
+
   return (
     <div style={styles.main}>
       <h1 style={styles.title}>Manage Passwords</h1>
@@ -25,7 +30,10 @@ export default function MainPanel({ selected, isEditing, showPassword, onFieldCh
           )}
         </InfoRow>
 
-        <InfoRow label="Username" icon={!isEditing && <FaCopy style={styles.icon} onClick={() => navigator.clipboard.writeText(selected.username)} />}>
+        <InfoRow 
+          label="Username" 
+          icon={!isEditing && <FaCopy style={styles.icon} onClick={() => copyToClipboard(selected.username)} />} 
+        >
           {isEditing ? (
             <input style={styles.input} type="text" value={selected.username} onChange={(e) => onFieldChange("username", e.target.value)} />
           ) : (
@@ -33,7 +41,21 @@ export default function MainPanel({ selected, isEditing, showPassword, onFieldCh
           )}
         </InfoRow>
 
-        <InfoRow label="Password" icon={!isEditing && (showPassword ? <FaEyeSlash style={styles.icon} onClick={() => setShowPassword(false)} /> : <FaEye style={styles.icon} onClick={() => setShowPassword(true)} />)}>
+        <InfoRow
+          label="Password"
+          icon={
+            !isEditing && (
+              <>
+                <FaCopy style={styles.icon} title="Copy Password" onClick={() => copyToClipboard(selected.password)} />
+                {showPassword ? (
+                  <FaEyeSlash style={styles.icon} title="Hide Password" onClick={() => setShowPassword(false)} />
+                ) : (
+                  <FaEye style={styles.icon} title="Show Password" onClick={() => setShowPassword(true)} />
+                )}
+              </>
+            )
+          }
+        >
           {isEditing ? (
             <input style={styles.input} type="text" value={selected.password} onChange={(e) => onFieldChange("password", e.target.value)} />
           ) : showPassword ? (
