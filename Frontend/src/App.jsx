@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PasswordManager from "./components/PasswordManageScreen/PasswordManager";
 import LoginSignUp from "./components/LoginSignUp";
+import ProfilePage from "./components/ProfilePage.jsx";
 
 const App = () => {
   return (

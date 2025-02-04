@@ -4,11 +4,11 @@
 }
 
 body{
-  font-family: 'Virust', sans-serif;
   background-color: #e0f7fa;
 }
 
 .profileContainer {
+  font-family: 'Virust', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,12 +21,13 @@ body{
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  /* text-align: center; */
   width: 80vw;
   height: 90vh;
 }
 
 .profileInfo{
+  display: inline-block;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin: 10px 0px 0px 10px;
   height: 25vh;
@@ -36,7 +37,6 @@ body{
   border-radius: 10px;
   border-width: 1px;
   border-color: gray;
-  border-style: solid;
 }
 
 .profileName {
@@ -51,16 +51,15 @@ body{
 }
 
 .contactInfo{
-  margin: 5px 0;
-}
-
-.contactInfo{
-  border: #d7d9e0 1px solid;
-  display: flex;
-  justify-content: top;
-  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px;
+  display: inline-block;
+  justify-content: right;
+  text-align: center;
   padding: .7rem;
   border-radius: 10px;
+  width: 30vw;
+  margin: 5px 0;
 }
 
 .email-content{
@@ -71,48 +70,4 @@ body{
   margin: 0;
   padding: 0;
   border: 0;
-}
-
-.sidebar{
-  width: "250px";
-  background: "#add8e6";
-  padding: "20px";
-  textAlign: "left";
-  height: "100vh";
-}
-
-.logo{
-  width: "80px";
-  height: "80px";
-  marginBottom: "10px";
-}
-
-.sidebarTitle {
-  fontSize: "22px";
-  color: "white";
-  marginBottom: "10px";
-}
-
-.list {
-  listStyle: "none";
-  padding: 0;
-}
-
-.listItem {
-  padding: "10px";
-  cursor: "pointer";
-  borderBottom: "1px solid white";
-  color: "black";
-}
-
-.listItemActive {
-  padding: "10px";
-  cursor: "pointer";
-  background: "#007bff";
-  color: "white";
-}
-
-.icon{
-  cursor: "pointer";
-  marginLeft: "10px";
 }
