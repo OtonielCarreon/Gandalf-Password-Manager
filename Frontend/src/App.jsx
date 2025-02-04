@@ -1,13 +1,16 @@
 import React from "react";
-import PasswordManager from "./components/PasswordManager";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PasswordManager from "./components/PasswordManageScreen/PasswordManager";
 import LoginSignUp from "./components/LoginSignUp";
 
 const App = () => {
   return (
-    <div>
-      <PasswordManager />
-      <LoginSignUp />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginSignUp />} />  {/* Default page */}
+        <Route path="/passwords" element={<PasswordManager />} />  {/* Separate login page */}
+      </Routes>
+    </Router>
   );
 };
 
