@@ -5,7 +5,7 @@ import { FaUserCircle, FaCaretDown, FaSearch } from "react-icons/fa";
 import styles from "./styles";
 
 const initialPasswords = [
-  { site: "Bestbuy", username: "Testingaccount", password: "password123", website: "bestbuy.com" },
+  { site: "Youtube", username: "Testingaccount", password: "password123", website: "youtube.com" },
   { site: "Amazon", username: "Testingaccount", password: "amazonpass", website: "amazon.com" },
   { site: "Netflix", username: "Testingaccount", password: "netflixpass", website: "netflix.com" },
 ];
@@ -41,7 +41,7 @@ export default function PasswordManager() {
     setIsEditing(false);
     setShowPassword(false);
   };
-
+  
   // Filter passwords when searching
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -51,7 +51,6 @@ export default function PasswordManager() {
     );
     setFilteredPasswords(filtered);
   };
-
   return (
     <div style={styles.container}>
       {/* Top Bar with Search & Email Dropdown */}
@@ -67,15 +66,13 @@ export default function PasswordManager() {
             onChange={handleSearch}
           />
         </div>
-
-        {/* Account Dropdown on the Right */}
+        {/* Account Dropdown*/}
         <div style={styles.accountContainer}>
           <FaUserCircle size={20} />
           <span style={styles.emailText}>user@example.com</span>
           <FaCaretDown style={styles.dropdownIcon} />
         </div>
       </div>
-
       {/* Sidebar & Main Content */}
       <div style={{ display: "flex", flex: 1 }}>
         <Sidebar
