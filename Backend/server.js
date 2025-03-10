@@ -1,33 +1,77 @@
+require("dotenv").config();
 const express = require("express");
+const bcrypt = require("bcryptjs");
+const { Pool } = require("pg");
 
 const app = express();
-const PORT = 5001;
+app.use(express.json()); 
 
-app.use(express.json());
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT), 
+  ssl: { rejectUnauthorized: false } 
+});
 
-const users = [];
+pool.connect()
+  .then(() => console.log("Connected to PostgreSQL on Render successfully!"))
+  .catch(err => {
+    console.error(" Database connection error:", err);
+    process.exit(1); 
+  });
 
-app.get("/", (req, res) => res.send("Welcome to Gandalf Password Manager!"));
 
-//Route for user registration
-app.post("/api/auth/register", (req, res) => {
-  const { email, password } = req.body;
-  if (users.some((user) => user.email === email)) {
-    return res.status(400).json({ message: "User exists" });
-    //Check if the email already exists
+app.get("/", (req, res) => {
+  res.send("Welcome to the backend API!");
+});
+
+app.get("/test-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ message: "Database connected!", time: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Database connection failed", details: err });
   }
-  users.push({ email, password });
-  //Add new user
-  res.status(201).json({ message: "Registered" });
 });
 
-//Route for user login
-app.post("/api/auth/login", (req, res) => {
+app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
-  const user = users.find((user) => user.email === email && user.password === password);
-  //Check if user exists with matching credentials
-  if (!user) return res.status(401).json({ message: "Invalid" }); //Return error message
-  res.json({ message: "Success" }); //Return success message
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query("INSERT INTO users (email, password) VALUES ($1, $2)", [
+      email,
+      hashedPassword,
+    ]);
+    res.json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.status(400).json({ error: "Email already exists or invalid input" });
+  }
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (userResult.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const user = userResult.rows[0];
+    
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    res.json({ message: "Login successful" });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
