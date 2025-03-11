@@ -1,83 +1,131 @@
 import React, { useState } from "react";
-import logo from "../images/gandalflogo.jpg"; //import logo image
+import { useNavigate } from "react-router-dom"; // Redirect users after login
+import logo from "../images/gandalflogo.jpg"; 
 
 const LoginSignUp = () => {
   const [isLogin, setIsLogin] = useState(true);
-  // State to toggle between Login and Sign Up modes
+  const navigate = useNavigate(); // React Router for redirection
 
   const [formData, setFormData] = useState({
-    // State to manage form data for name, email, and password
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
   });
+  
 
-  // Handle form input changes and update formData state
+  // Handle input field changes
   const handleChange = (event) => {
-    const { name, value } = event.target; // Extract name and value from input
-    setFormData({ ...formData, [name]: value }); // Update the corresponding field in state
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    alert(`${isLogin ? "Logging in" : "Registering"} with ${formData.email}`);
+
+    const apiEndpoint = isLogin 
+      ? "http://localhost:5001/login" 
+      : "http://localhost:5001/signup";
+
+    const payload = isLogin 
+      ? { email: formData.email, password: formData.password } 
+      : { 
+          first_name: formData.first_name,  
+          last_name: formData.last_name, 
+          email: formData.email, 
+          username: formData.email.split("@")[0], 
+          password: formData.password
+        };
+
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message); 
+        if (isLogin) {
+          localStorage.setItem("user", JSON.stringify(data));
+          navigate("/passwords"); 
+        }
+      } else {
+        alert("Error: " + data.error); 
+      }
+    } catch (error) {
+      alert("Request failed: " + error.message);
+    }
+  };
+
+  // Toggle between login and signup
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setFormData({ name: "", email: "", password: "" }); // Reset input fields
   };
 
   return (
     <div style={styles.container}>
-      <style>
-        {`
-          @font-face {
-            font-family: 'Virust';
-            src: url('./fonts/VIRUST.ttf') format('truetype');
-          }
-        `}
-      </style>
       <div style={styles.card}>
         <img src={logo} alt="Gandalf Logo" style={styles.logo} />
         <h1 style={styles.title}>Gandalf Password Manager</h1>
         <h2 style={styles.subtitle}>{isLogin ? "Login" : "Sign Up"}</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
-          {!isLogin && ( //Form for login signup
+          {!isLogin && ( // Show name field only during signup
+           <>
             <input
               type="text"
-              name="name"
-              placeholder="Name"
-              value={formData.name}
+              name="first_name"
+              placeholder="First Name"
+              value={formData.first_name}
               onChange={handleChange}
               style={styles.input}
+              required
             />
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+              value={formData.last_name}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
+            </>
           )}
-          <input //email input 
+          <input
             type="email"
             name="email"
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             style={styles.input}
+            required
           />
-          <input //password input
+          <input
             type="password"
             name="password"
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
             style={styles.input}
+            required
           />
-          <button // submit button
-            type="submit" style={styles.button}> 
-            {isLogin ? "Login" : "Sign Up"} 
+          <button type="submit" style={styles.button}>
+            {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
-        <p style={styles.toggle} onClick={() => setIsLogin(!isLogin)}>
+        <p style={styles.toggle} onClick={toggleMode}>
           {isLogin ? "Don't have an account? Sign up" : "Already have an account? Login"}
         </p>
       </div>
     </div>
   );
 };
-//styles for the components
+
 const styles = {
   container: {
     display: "flex",
@@ -85,12 +133,12 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    backgroundColor:"#e0f7fa",
+    backgroundColor: "#e0f7fa",
   },
   logo: {
-    width: "100px", 
+    width: "100px",
     height: "100px",
-    marginBottom: "20px", 
+    marginBottom: "20px",
   },
   card: {
     background: "#add8e6",
@@ -100,16 +148,15 @@ const styles = {
     width: "300px",
   },
   title: {
-    fontFamily: "Virust, sans-serif",
-    fontSize: "32px",
+    fontSize: "28px",
+    fontWeight: "bold",
     color: "white",
   },
   subtitle: {
-    fontFamily: "Virust, sans-serif",
-    fontSize: "24px",
+    fontSize: "20px",
     color: "black",
     marginBottom: "20px",
-  },  
+  },
   form: {
     display: "flex",
     flexDirection: "column",
