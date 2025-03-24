@@ -1,10 +1,10 @@
-@font-face{
-  font-family: Virust;
-  src: url(VIRUST.ttf);
+@font-face {
+  font-family: 'Virust';
+  src: url('../fonts/VIRUST.ttf') format('truetype');
 }
 
 body{
-  font-family: Virust, sans-serif;
+  font-family: 'Virust', sans-serif;
   background-color: #e0f7fa;
 }
 
