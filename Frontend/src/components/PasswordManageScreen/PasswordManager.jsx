@@ -54,9 +54,9 @@ export default function PasswordManager() {
   return (
     <div style={styles.container}>
       {/* Top Bar with Search & Email Dropdown */}
-      <div style={styles.topBar}>
+      <div name="topbar" style={styles.topBar}>
         {/* Search Bar */}
-        <div style={styles.searchContainer}>
+        <div name="searchcontainer" style={styles.searchContainer}>
           <FaSearch style={styles.searchIcon} />
           <input
             type="text"
@@ -67,14 +67,14 @@ export default function PasswordManager() {
           />
         </div>
         {/* Account Dropdown*/}
-        <div style={styles.accountContainer}>
+        {/* <div name="accountcontainer" style={styles.accountContainer}>
           <FaUserCircle size={20} />
           <span style={styles.emailText}>user@example.com</span>
           <FaCaretDown style={styles.dropdownIcon} />
-        </div>
+        </div> */}
       </div>
       {/* Sidebar & Main Content */}
-      <div style={{ display: "flex", flex: 1 }}>
+      <div name="sidebar-and-content">
         <Sidebar
           passwords={filteredPasswords}
           selected={selected}

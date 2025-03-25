@@ -120,9 +120,9 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center", 
-    padding: "20px",
-    marginTop: "-150px", 
-    marginLeft: "200px",
+    // padding: "20px",
+    // marginTop: "0px", 
+    // marginLeft: "200px",
   },
   title: {
     fontSize: "26px",

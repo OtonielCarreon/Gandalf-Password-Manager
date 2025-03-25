@@ -1,6 +1,7 @@
 import React from "react";
 import { FaUser, FaShieldAlt, FaPaintBrush, FaFileExport, FaTrash } from "react-icons/fa";
 import settingsStyles from "./settingsStyles";
+import NavigationButtons from "../NavigationButton/NavigationButtons";
 import logo from "../../images/gandalflogo.jpg";
 
 export default function SettingsSidebar({ selectedSetting, onSelect, isDarkMode }) {
@@ -15,7 +16,7 @@ export default function SettingsSidebar({ selectedSetting, onSelect, isDarkMode 
   return (
     <div style={isDarkMode ? settingsStyles.darkSidebar : settingsStyles.sidebar}>
       <img src={logo} alt="Logo" style={settingsStyles.logo} />
-      
+      <NavigationButtons />
       <h2 style={settingsStyles.sidebarTitle}>Settings</h2>
       <ul style={settingsStyles.list}>
         {settingsOptions.map((option, idx) => (
