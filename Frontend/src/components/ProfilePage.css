@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'Virust';
   src: url('../fonts/VIRUST.ttf') format('truetype');
 }
@@ -22,7 +22,7 @@ body{
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   /* text-align: center; */
-  width: 80vw;
+  /* width: 80vw;
   height: 90vh;
 }
 
@@ -42,7 +42,7 @@ body{
 .profileName {
   font-weight: bolder;
   /* font-size: 1.8rem; */
-  margin: 10px 0;
+  /* margin: 10px 0;
 }
 
 .profileUsername {
@@ -70,4 +70,4 @@ body{
   margin: 0;
   padding: 0;
   border: 0;
-}
+} */
