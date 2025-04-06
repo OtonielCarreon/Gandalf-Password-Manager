@@ -1,5 +1,5 @@
 import React from 'react';
-// import './MarketingFrontPage.css';
+import './MarketingFrontPage.css';
 
 function MarketingFrontPage() {
   return (
@@ -15,9 +15,9 @@ function MarketingFrontPage() {
       <section className="features">
         <h2>Features</h2>
         {[
-          { title: 'Secure Encryption', description: 'Protect your data with military-grade encryption.' },
+          { title: 'Secure Encryption', description: 'Protect your data with our military-grade encryption.' },
           { title: 'Easy Access', description: 'Sync your passwords across all your devices.' },
-          { title: 'Password Generator', description: 'Create strong, unique passwords with one click.' }
+          { title: 'Password Generator', description: 'Create strong, unique passwords with just a click.' }
         ].map((feature, index) => (
           <div className="feature-card" key={index}>
             <h3>{feature.title}</h3>
