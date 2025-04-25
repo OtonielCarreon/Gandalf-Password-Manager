@@ -30,3 +30,38 @@ CREATE TABLE AuditLogs (
     action VARCHAR(255) NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE Gandalf_Users (
+    Gandalf_User_ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    First_Name VARCHAR(50) NOT NULL,
+    Last_Name VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Username VARCHAR(50) UNIQUE NOT NULL,
+    Hashed_Password TEXT NOT NULL
+);
+
+CREATE TABLE Domain (
+    Domain_ID SERIAL PRIMARY KEY,
+    Link TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE Website_Credentials (
+    Web_Cred_ID SERIAL PRIMARY KEY,
+    Domain_ID INT NOT NULL,
+    Gandalf_User_ID INT NOT NULL,
+    Web_Cred_Username VARCHAR(100) NOT NULL,
+    Web_Cred_Password TEXT NOT NULL,
+    FOREIGN KEY (Domain_ID) REFERENCES Domain(Domain_ID) ON DELETE CASCADE,
+    FOREIGN KEY (Gandalf_User_ID) REFERENCES Gandalf_Users(Gandalf_User_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Admins (
+    Admin_ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    First_Name VARCHAR(255) NOT NULL,
+    Last_Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    Username VARCHAR(255) UNIQUE NOT NULL,
+    Password TEXT NOT NULL,
+    Role VARCHAR(50) NOT NULL CHECK (Role IN ('SuperAdmin', 'Moderator', 'Support')),
+    Created_At TIMESTAMP DEFAULT NOW()
+);

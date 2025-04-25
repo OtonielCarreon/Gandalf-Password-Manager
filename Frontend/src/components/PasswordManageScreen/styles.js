@@ -1,4 +1,8 @@
 const styles = {
+  html: {
+    height: "100vh"
+  },
+
   container: {
     display: "flex",
     flexDirection: "column",

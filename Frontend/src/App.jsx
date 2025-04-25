@@ -19,13 +19,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<LoginSignUp />} />
       </Routes>
-      <div style={{ textAlign: "right", marginTop: "20px" }}>
           <Routes>
             <Route path="/passwords" element={<PasswordManager />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsScreen />} />
           </Routes>
-        </div>
     </Router>
   );
 };

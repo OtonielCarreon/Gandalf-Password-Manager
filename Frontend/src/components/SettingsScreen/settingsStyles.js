@@ -21,7 +21,7 @@ const settingsStyles = {
     height: "100vh",
     background: "#1565c0",
     padding: "20px",
-    boxSizing: "border-box",
+    // boxSizing: "border-box",
     color: "#fff",
     display: "flex",
     flexDirection: "column",
