@@ -79,5 +79,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/passwords", async (req, res) => {
+  const {site, username, password, website} = req.body;
+  try{
+    await pool.query("INSERT INTO Gandalf_Users (site, username, password, website)",
+      [site, username, password, website]);  
+  } catch (err) {
+    console.error("Add error:", err);
+    res.status(400).json({ error: "Error registering new password. Please check input." });
+  }
+});
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

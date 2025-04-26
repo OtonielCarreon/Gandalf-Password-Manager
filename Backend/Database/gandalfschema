@@ -20,8 +20,7 @@ CREATE TABLE Passwords (
     website_url VARCHAR(255) NOT NULL,
     username VARCHAR(100) NOT NULL,
     encrypted_password TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE AuditLogs (
@@ -65,3 +64,5 @@ CREATE TABLE Admins (
     Role VARCHAR(50) NOT NULL CHECK (Role IN ('SuperAdmin', 'Moderator', 'Support')),
     Created_At TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE 
