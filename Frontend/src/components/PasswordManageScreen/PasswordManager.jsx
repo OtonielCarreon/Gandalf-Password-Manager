@@ -29,7 +29,7 @@ export default function PasswordManager() {
       const payload = {
         site: entry.site,
         username: entry.username,
-        password: entry.password_plaintext,
+        password: selected.password_plaintext || selected.password, 
         website: entry.website
       };
 
@@ -107,13 +107,31 @@ export default function PasswordManager() {
   const handleSave = async () => {
     if (!selected) return;
 
-    if (!selected.site || !selected.username || !selected.password_plaintext || !selected.website) {
+    if (!selected.site || !selected.username || !(selected.password_plaintext || selected.password) || !selected.website) {
       alert("Please fill in all fields before saving.");
       return;
     }
 
-    await savePasswordToDB(selected);
-    await fetchPasswordsFromDB();
+    const payload = {
+      site: selected.site,
+      username: selected.username,
+      password: selected.password_plaintext,
+      website: selected.website,
+    };
+
+    if (selected.password_id) {
+      // UPDATE existing password
+      await fetch(`http://localhost:5001/passwords/${selected.password_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      // INSERT new password
+      await savePasswordToDB(payload);
+    }
+
+    await fetchPasswordsFromDB(); // Refresh sidebar
     setIsEditing(false);
   };
 
@@ -132,7 +150,7 @@ export default function PasswordManager() {
         </div>
       </div>
 
-      <div name="sidebar-and-content">
+      <div name="sidebar-and-content" style={styles.sidebarAndContent}>
         <Sidebar
           passwords={filteredPasswords}
           selected={selected}

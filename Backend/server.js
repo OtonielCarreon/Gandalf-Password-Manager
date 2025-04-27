@@ -83,5 +83,32 @@ app.delete("/passwords/:id", async (req, res) => {
   }
 });
 
+app.put("/passwords/:id", async (req, res) => {
+  const { id } = req.params;
+  const { site, username, password, website } = req.body;
+
+  if (!site || !username || !password || !website) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    await pool.query(
+      `UPDATE passwords 
+       SET site = $1, username = $2, website_url = $3, encrypted_password = $4, password_plaintext = $5
+       WHERE password_id = $6`,
+      [site, username, website, encryptedPassword, password, id]
+    );
+
+    res.json({ message: "Password updated successfully!" });
+  } catch (err) {
+    console.error("Error updating password:", err);
+    res.status(500).json({ error: "Database update error" });
+  }
+});
+
+
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
