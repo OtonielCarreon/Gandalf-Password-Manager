@@ -82,8 +82,10 @@ app.post("/login", async (req, res) => {
 app.post("/passwords", async (req, res) => {
   const {site, username, password, website} = req.body;
   try{
-    await pool.query("INSERT INTO Gandalf_Users (site, username, password, website)",
+    
+    await pool.query("INSERT INTO passwords (site, username, password, website) VALUES ($1, $2, $3, $4)",
       [site, username, password, website]);  
+    res.json({ message: "Password saved successfully"});
   } catch (err) {
     console.error("Add error:", err);
     res.status(400).json({ error: "Error registering new password. Please check input." });

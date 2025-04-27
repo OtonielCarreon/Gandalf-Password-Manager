@@ -51,6 +51,35 @@ export default function PasswordManager() {
     );
     setFilteredPasswords(filtered);
   };
+
+  // Saves Password to the Database
+  const handleSave = async (event) => {
+
+    const apiEndpoint = "http://localhost:5001/passwords";
+
+    const payload = { site: "", username: "", password: "", website: "" };
+
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message); 
+          localStorage.setItem("user", JSON.stringify(data));
+      } else {
+        alert("Error: " + data.error); 
+      }
+    } catch (error) {
+      alert("Request failed: " + error.message);
+    }
+  }
+
+
   return (
     <div style={styles.container}>
       {/* Top Bar with Search & Email Dropdown */}
@@ -67,11 +96,6 @@ export default function PasswordManager() {
           />
         </div>
         {/* Account Dropdown*/}
-        {/* <div name="accountcontainer" style={styles.accountContainer}>
-          <FaUserCircle size={20} />
-          <span style={styles.emailText}>user@example.com</span>
-          <FaCaretDown style={styles.dropdownIcon} />
-        </div> */}
       </div>
       {/* Sidebar & Main Content */}
       <div name="sidebar-and-content">
@@ -88,7 +112,9 @@ export default function PasswordManager() {
           onFieldChange={handleFieldChange}
           setIsEditing={setIsEditing}
           setShowPassword={setShowPassword}
-          onSave={() => setIsEditing(false)}
+          onSave={
+            // () => setIsEditing(false) && 
+            handleSave}
           onDelete={handleDelete}
           passwords={filteredPasswords}
           onSearch={handleSearch}
