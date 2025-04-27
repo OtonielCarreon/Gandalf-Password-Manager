@@ -1,39 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import MainPanel from "./MainPanel";
-import { FaUserCircle, FaCaretDown, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import styles from "./styles";
 
-const initialPasswords = [
-  { site: "Youtube", username: "Testingaccount", password: "password123", website: "youtube.com" },
-  { site: "Amazon", username: "Testingaccount", password: "amazonpass", website: "amazon.com" },
-  { site: "Netflix", username: "Testingaccount", password: "netflixpass", website: "netflix.com" },
-];
-
 export default function PasswordManager() {
-  const [passwords, setPasswords] = useState(initialPasswords);
-  const [filteredPasswords, setFilteredPasswords] = useState(initialPasswords);
-  const [selected, setSelected] = useState(passwords[0] || null);
+  const [passwords, setPasswords] = useState([]);
+  const [filteredPasswords, setFilteredPasswords] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Handles changes in input fields
+  const fetchPasswordsFromDB = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/passwords");
+      const data = await response.json();
+      setPasswords(data);
+      setFilteredPasswords(data);
+      setSelected(data[0] || null);
+    } catch (error) {
+      console.error("Error fetching passwords:", error);
+    }
+  };
+
+  const savePasswordToDB = async (entry) => {
+    try {
+      const payload = {
+        site: entry.site,
+        username: entry.username,
+        password: entry.password_plaintext,
+        website: entry.website
+      };
+
+      const response = await fetch("http://localhost:5001/passwords", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Password saved to DB!");
+      } else {
+        console.error("Error from server:", data.error);
+      }
+    } catch (error) {
+      console.error("Error saving password to DB:", error);
+    }
+  };
+
+  const deletePasswordFromDB = async (id) => {
+    try {
+      await fetch(`http://localhost:5001/passwords/${id}`, {
+        method: "DELETE"
+      });
+      console.log("Password deleted from DB!");
+    } catch (error) {
+      console.error("Error deleting password:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPasswordsFromDB();
+  }, []);
+
   const handleFieldChange = (field, value) => {
     setSelected((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Creates a new password entry
   const handleCreateNew = () => {
-    const newEntry = { site: "", username: "", password: "", website: "" };
+    const newEntry = { site: "", username: "", password_plaintext: "", website: "" };
     setPasswords((prev) => [...prev, newEntry]);
     setFilteredPasswords((prev) => [...prev, newEntry]);
     setSelected(newEntry);
     setIsEditing(true);
   };
 
-  // Deletes selected password entry
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!selected) return;
+
+    if (selected.password_id) {
+      await deletePasswordFromDB(selected.password_id);
+    }
+
     const updatedPasswords = passwords.filter((entry) => entry !== selected);
     setPasswords(updatedPasswords);
     setFilteredPasswords(updatedPasswords);
@@ -41,50 +94,32 @@ export default function PasswordManager() {
     setIsEditing(false);
     setShowPassword(false);
   };
-  
-  // Filter passwords when searching
+
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
     const filtered = passwords.filter((entry) =>
-      entry.site.toLowerCase().includes(query.toLowerCase())
+      (entry.site || "").toLowerCase().includes(query.toLowerCase())
     );
     setFilteredPasswords(filtered);
   };
 
-  // Saves Password to the Database
-  const handleSave = async (event) => {
+  const handleSave = async () => {
+    if (!selected) return;
 
-    const apiEndpoint = "http://localhost:5001/passwords";
-
-    const payload = { site: "", username: "", password: "", website: "" };
-
-    try {
-      const response = await fetch(apiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert(data.message); 
-          localStorage.setItem("user", JSON.stringify(data));
-      } else {
-        alert("Error: " + data.error); 
-      }
-    } catch (error) {
-      alert("Request failed: " + error.message);
+    if (!selected.site || !selected.username || !selected.password_plaintext || !selected.website) {
+      alert("Please fill in all fields before saving.");
+      return;
     }
-  }
 
+    await savePasswordToDB(selected);
+    await fetchPasswordsFromDB();
+    setIsEditing(false);
+  };
 
   return (
     <div style={styles.container}>
-      {/* Top Bar with Search & Email Dropdown */}
       <div name="topbar" style={styles.topBar}>
-        {/* Search Bar */}
         <div name="searchcontainer" style={styles.searchContainer}>
           <FaSearch style={styles.searchIcon} />
           <input
@@ -95,9 +130,8 @@ export default function PasswordManager() {
             onChange={handleSearch}
           />
         </div>
-        {/* Account Dropdown*/}
       </div>
-      {/* Sidebar & Main Content */}
+
       <div name="sidebar-and-content">
         <Sidebar
           passwords={filteredPasswords}
@@ -112,9 +146,7 @@ export default function PasswordManager() {
           onFieldChange={handleFieldChange}
           setIsEditing={setIsEditing}
           setShowPassword={setShowPassword}
-          onSave={
-            // () => setIsEditing(false) && 
-            handleSave}
+          onSave={handleSave}
           onDelete={handleDelete}
           passwords={filteredPasswords}
           onSearch={handleSearch}

@@ -1,19 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaCopy, FaPencilAlt, FaTrash } from "react-icons/fa";
 import styles from "./styles";
 import InfoRow from "./InfoRow";
 
 export default function MainPanel({
-  selected, isEditing, showPassword, onFieldChange, setIsEditing, setShowPassword, onSave, onDelete
-}) {
+  selected, isEditing, showPassword, onFieldChange, setIsEditing, setShowPassword, onSave, onDelete}) {
+  const [copySuccess, setCopySuccess] = useState(false);
+
   // Copies text to clipboard
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 1000); 
   };
 
   return (
     <div style={styles.main}>
+      
+      {copySuccess && (
+        <div style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          backgroundColor: "#0d47a1",
+          color: "white",
+          padding: "10px 20px",
+          borderRadius: "8px",
+          fontSize: "14px",
+        }}>
+          Copied to clipboard!
+        </div>
+      )}
+
       {!selected ? (
         <p style={{ fontSize: "16px", color: "gray" }}>
           Please select a vault item or create a new one.
@@ -58,16 +76,16 @@ export default function MainPanel({
               <input
                 style={styles.input}
                 type="text"
-                value={selected.password}
-                onChange={(e) => onFieldChange("password", e.target.value)}
+                value={selected.password_plaintext}
+                onChange={(e) => onFieldChange("password_plaintext", e.target.value)}
               />
             ) : (
               <>
-                {showPassword ? selected.password : "••••••••"}{" "}
+                {showPassword ? selected.password_plaintext : "••••••••"}{" "}
                 <FaCopy
                   style={styles.iconColumn}
                   title="Copy Password"
-                  onClick={() => copyToClipboard(selected.password)}
+                  onClick={() => copyToClipboard(selected.password_plaintext)}
                 />
                 {showPassword ? (
                   <FaEyeSlash
