@@ -108,6 +108,109 @@ app.put("/passwords/:id", async (req, res) => {
   }
 });
 
+app.put("/me", async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).json({ error: "Username and email are required." });
+  }
+
+  try {
+    await pool.query(
+      "UPDATE users SET username = $1, email = $2 WHERE user_id = $3",
+      [username, email, 1] // Hardcoded user_id = 1 for now
+    );
+    res.json({ message: "Profile updated successfully!" });
+  } catch (err) {
+    console.error("Error updating user:", err);
+    res.status(500).json({ error: "Database update error" });
+  }
+});
+
+
+app.get("/me", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT username, email FROM users WHERE user_id = $1",
+      [1] // hardcoded user_id = 1
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    res.status(500).json({ error: "Database fetch error" });
+  }
+});
+
+app.put("/change-password", async (req, res) => {
+  const { newPassword } = req.body;
+
+  if (!newPassword) {
+    return res.status(400).json({ error: "New password is required." });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      "UPDATE users SET master_password_hash = $1 WHERE user_id = $2",
+      [hashedPassword, 1] 
+    );
+
+    res.json({ message: "Password updated successfully!" });
+  } catch (err) {
+    console.error("Error updating password:", err);
+    res.status(500).json({ error: "Database error while updating password." });
+  }
+});
+
+app.delete("/delete-account", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM users WHERE user_id = $1", [1]); 
+    res.json({ message: "Account deleted successfully!" });
+  } catch (err) {
+    console.error("Error deleting account:", err);
+    res.status(500).json({ error: "Database delete error" });
+  }
+});
+
+// Export vault
+app.get("/export-vault", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM passwords WHERE user_id = $1", [1]);
+    const passwords = result.rows;
+    res.setHeader('Content-Disposition', 'attachment; filename="vault_backup.json"');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(passwords, null, 2));
+  } catch (err) {
+    console.error("Error exporting vault:", err);
+    res.status(500).json({ error: "Vault export error" });
+  }
+});
+
+
+// Import vault
+app.post("/import-vault", async (req, res) => {
+  try {
+    const { vault } = req.body;
+    if (!Array.isArray(vault)) {
+      return res.status(400).json({ error: "Invalid vault format." });
+    }
+
+    for (const entry of vault) {
+      await pool.query(
+        "INSERT INTO passwords (user_id, site, website_url, username, encrypted_password, password_plaintext, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW())",
+        [1, entry.site, entry.website_url, entry.username, entry.encrypted_password, entry.password_plaintext]
+      );
+    }
+
+    res.json({ message: "Vault imported successfully!" });
+  } catch (err) {
+    console.error("Error importing vault:", err);
+    res.status(500).json({ error: "Vault import error" });
+  }
+});
 
 
 const PORT = process.env.PORT || 5001;
