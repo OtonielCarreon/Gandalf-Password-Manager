@@ -17,6 +17,8 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+
+
 pool.connect()
   .then(() => console.log("Connected to PostgreSQL!"))
   .catch(err => {
@@ -36,6 +38,67 @@ app.get("/test-db", async (req, res) => {
     res.status(500).json({ error: "Database connection failed", details: err });
   }
 });
+
+// Signup route 
+app.post("/signup", async (req, res) => {
+  const { first_name, last_name, email, password } = req.body;
+
+  if (!first_name || !last_name || !email || !password) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: "User already exists with that email." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const username = `${first_name} ${last_name}`;
+
+    await pool.query(
+      "INSERT INTO users (username, email, master_password_hash, created_at) VALUES ($1, $2, $3, NOW())",
+      [username, email, hashedPassword]
+    );
+
+    res.json({ message: "User registered successfully!" });
+  } catch (err) {
+    console.error("Error signing up user:", err);
+    res.status(500).json({ error: "Server error during signup." });
+  }
+});
+
+
+
+// Login route 
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required." });
+  }
+
+  try {
+    const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (userResult.rows.length === 0) {
+      return res.status(400).json({ error: "Invalid email or password." });
+    }
+
+    const user = userResult.rows[0];
+
+    const isMatch = await bcrypt.compare(password, user.master_password_hash);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid email or password." });
+    }
+
+    res.json({ message: "Login successful!", user });
+  } catch (err) {
+    console.error("Error during login:", err);
+    res.status(500).json({ error: "Server error during login." });
+  }
+});
+
+
 
 app.post("/passwords", async (req, res) => {
   const { site, username, password, website } = req.body;

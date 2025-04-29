@@ -9,7 +9,7 @@ export default function ProfilePage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-  const [saveSuccess, setSaveSuccess] = useState(false); // ✅ for notification
+  const [saveSuccess, setSaveSuccess] = useState(false); 
 
   const fetchUser = async () => {
     try {
