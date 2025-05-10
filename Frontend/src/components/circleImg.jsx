@@ -1,6 +1,6 @@
 import React from 'react';
-import './circleimgstyles.css'
-import oats from './oats.jpeg'
+import './Circleimgstyles.css';
+import oats from '../images/oats.jpeg';
 
 const CircleImg = (imag) => {
     return (
